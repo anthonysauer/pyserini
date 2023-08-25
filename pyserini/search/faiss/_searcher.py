@@ -391,7 +391,7 @@ class FaissSearcher:
         if isinstance(query_encoder, QueryEncoder) or isinstance(query_encoder, PcaEncoder):
             self.query_encoder = query_encoder
         else:
-            self.query_encoder = self._init_encoder_from_str(query_encoder)
+            self.query_encoder = SentenceTransformer(query_encoder)
         self.index, self.docids = self.load_index(index_dir)
         self.dimension = self.index.d
         self.num_docs = self.index.ntotal
