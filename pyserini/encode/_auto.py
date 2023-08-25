@@ -56,7 +56,7 @@ class AutoDocumentEncoder(DocumentEncoder):
 
         inputs = self.tokenizer(**input_kwargs, **shared_tokenizer_kwargs)
         inputs.to(self.device)
-        outputs = self.model(**inputs)
+        outputs = self.model.encoder(**inputs)
         if self.pooling == "mean":
             embeddings = self._mean_pooling(outputs[0], inputs['attention_mask']).detach().cpu().numpy()
         else:
@@ -89,7 +89,7 @@ class AutoQueryEncoder(QueryEncoder):
             return_token_type_ids=False,
         )
         inputs.to(self.device)
-        outputs = self.model(**inputs)[0].detach().cpu().numpy()
+        outputs = self.model.encdoer(**inputs)[0].detach().cpu().numpy()
         if self.pooling == "mean":
             embeddings = np.average(outputs, axis=-2)
         else:
