@@ -120,17 +120,12 @@ if __name__ == '__main__':
     args = parse_args(parser, commands)
     delimiter = args.input.delimiter.replace("\\n", "\n")  # argparse would add \ prior to the passed '\n\n'
 
-    encoder = init_encoder(args.encoder.encoder, args.encoder.encoder_class, device=args.encoder.device)
-    if type(encoder).__name__ == "AutoDocumentEncoder":
-        if args.encoder.pooling in ALLOWED_POOLING_OPTS:
-            encoder.pooling = args.encoder.pooling
-        else:
-            raise ValueError(f"Only allowed to use pooling types {ALLOWED_POOLING_OPTS}. You entered {args.encoder.pooling}")
+    encoder = SentenceTransformer(args.encoder.encoder)
     if args.output.to_faiss:
         embedding_writer = FaissRepresentationWriter(args.output.embeddings, dimension=args.encoder.dimension)
     else:
         embedding_writer = JsonlRepresentationWriter(args.output.embeddings)
-    collection_iterator = JsonlCollectionIterator(args.input.corpus, args.input.fields, args.input.docid_field, delimiter)
+    collection_iterator = JsonlCollectionIterator(args.input.corpus, args.input.fields, delimiter)
 
     with embedding_writer:
         for batch_info in collection_iterator(args.encoder.batch_size, args.input.shard_id, args.input.shard_num):
@@ -142,6 +137,6 @@ if __name__ == '__main__':
                 'max_length': args.encoder.max_length,
                 'add_sep': args.encoder.add_sep,
             }
-            embeddings = encoder.encode(**kwargs)
+            embeddings = encoder.encode(kwargs['texts'], args.encoder.batch_size)
             batch_info['vector'] = embeddings
             embedding_writer.write(batch_info, args.input.fields)
