@@ -89,7 +89,7 @@ class AutoQueryEncoder(QueryEncoder):
             return_token_type_ids=False,
         )
         inputs.to(self.device)
-        outputs = self.model.encdoer(**inputs)[0].detach().cpu().numpy()
+        outputs = self.model.encoder(**inputs)[0].detach().cpu().numpy()
         if self.pooling == "mean":
             embeddings = np.average(outputs, axis=-2)
         else:
