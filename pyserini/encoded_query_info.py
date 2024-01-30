@@ -15,26 +15,6 @@
 #
 
 QUERY_INFO = {
-    "aggretriever-cocondenser-msmarco-passage-dev-subset": {
-        "description": "MS MARCO passage dev set queries encoded by aggretriever-cocondenser",
-        "urls": [
-            "https://github.com/castorini/pyserini-data/raw/main/encoded-queries/query-embedding-aggretriever-cocondenser-msmarco-passage-dev-subset-20230407-f627ef.tar.gz"
-        ],
-        "md5": "c30ad20c7b101e3034f41597f0fc1f67",
-        "size (bytes)": 20859862,
-        "total_queries": 6980,
-        "downloaded": False
-    },
-    "aggretriever-distilbert-msmarco-passage-dev-subset": {
-        "description": "MS MARCO passage dev set queries encoded by aggretriever-distilbert",
-        "urls": [
-            "https://github.com/castorini/pyserini-data/raw/main/encoded-queries/query-embedding-aggretriever-distilbert-msmarco-passage-dev-subset-20230407-f627ef.tar.gz"
-        ],
-        "md5": "a6ee094bd681b08e5657ce69185eee82",
-        "size (bytes)": 20771767,
-        "total_queries": 6980,
-        "downloaded": False
-    },
     "tct_colbert-msmarco-passage-dev-subset": {
         "description": "MS MARCO passage dev set queries encoded by TCT-ColBERT",
         "urls": [
@@ -434,55 +414,5 @@ QUERY_INFO = {
         "size (bytes)": 32620950,
         "total_queries": 11313,
         "downloaded": False
-     },
-     "openai-ada2-dl19-passage": {
-        "description": "TREC DL19 passage queries encoded by OpenAI ada2.",
-        "urls": [
-            "https://github.com/castorini/pyserini-data/raw/main/encoded-queries/query-embedding-openai-ada2-dl19-passage-20230530-e3a58f.tar.gz",
-        ],
-        "md5": "ab57dab62c5b43508c661b78d6f7b6b9",
-        "size (bytes)": 418940,
-        "total_queries": 43,
-        "downloaded": False
-     },
-     "openai-ada2-dl20": {
-        "description": "TREC DL20 passage queries encoded by OpenAI ada2.",
-        "urls": [
-            "https://github.com/castorini/pyserini-data/raw/main/encoded-queries/query-embedding-openai-ada2-dl20-passage-20230530-e3a58f.tar.gz",
-        ],
-        "md5": "fe711c1e146647396fd06f125882d01c",
-        "size (bytes)": 1939404,
-        "total_queries": 200,
-        "downloaded": False
-     },
-     "openai-ada2-dl19-passage-hyde": {
-        "description": "TREC DL19 passage queries encoded by HyDE-OpenAI ada2.",
-        "urls": [
-            "https://github.com/castorini/pyserini-data/raw/main/encoded-queries/query-embedding-openai-ada2-hyde-dl19-passage-20230530-e3a58f.tar.gz",
-        ],
-        "md5": "bc981187dc18f3fbf21698605e2349b5",
-        "size (bytes)": 508400,
-        "total_queries": 43,
-        "downloaded": False
-     },
-     "openai-ada2-dl20-hyde": {
-        "description": "TREC DL20 passage queries encoded by HyDE-OpenAI ada2.",
-        "urls": [
-            "https://github.com/castorini/pyserini-data/raw/main/encoded-queries/query-embedding-openai-ada2-hyde-dl20-passage-20230530-e3a58f.tar.gz",
-        ],
-        "md5": "12389d6affdab9231996834f7022beab",
-        "size (bytes)": 645105,
-        "total_queries": 200,
-        "downloaded": False
-     },
-     "openai-ada2-msmarco-passage-dev-subset": {
-        "description": "MS MARCO passage dev set queries encoded by OpenAI ada2.",
-        "urls": [
-            "https://github.com/castorini/pyserini-data/raw/main/encoded-queries/query-embedding-openai-ada2-msmarco-passage-dev-subset-20230530-e3a58f.tar.gz",
-        ],
-        "md5": "0d9c7311e2e3819183d7ae2b4889e4ba",
-        "size (bytes)": 67615770,
-        "total_queries": 6980,
-        "downloaded": False
-     },    
+     }     
 }

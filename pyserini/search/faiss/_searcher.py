@@ -22,6 +22,7 @@ The main entry point is the ``FaissSearcher`` class.
 import os
 from dataclasses import dataclass
 from typing import Dict, List, Union, Optional, Tuple
+from sentence_transformers import SentenceTransformer
 
 import numpy as np
 import pandas as pd
@@ -39,7 +40,6 @@ from ._model import AnceEncoder
 import torch
 
 from ...encode import PcaEncoder
-from ...encode._aggretriever import BERTAggretrieverEncoder, DistlBERTAggretrieverEncoder
 
 if is_faiss_available():
     import faiss
@@ -85,39 +85,6 @@ class QueryEncoder:
         df = pd.read_pickle(os.path.join(encoded_query_dir, 'embedding.pkl'))
         return dict(zip(df['text'].tolist(), df['embedding'].tolist()))
 
-
-class AggretrieverQueryEncoder(QueryEncoder):
-    def __init__(self, encoder_dir: str = None, tokenizer_name: str = None,
-                 encoded_query_dir: str = None, device: str = 'cpu', **kwargs):
-        if encoder_dir:
-            self.device = device
-            if 'distilbert' in encoder_dir.lower():
-                self.model = DistlBERTAggretrieverEncoder.from_pretrained(encoder_dir)
-            else:
-                self.model = BERTAggretrieverEncoder.from_pretrained(encoder_dir)
-            self.model.to(self.device)
-            self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name or encoder_dir)
-            self.has_model = True
-        if (not self.has_model) and (not self.has_encoded_query):
-            raise Exception('Neither query encoder model nor encoded queries provided. Please provide at least one')
-
-    def encode(self, query: str,  max_length: int=32):
-        if self.has_model:
-            inputs = self.tokenizer(
-                query,
-                max_length=max_length,
-                padding="longest",
-                truncation=True,
-                add_special_tokens=True,
-                return_tensors='pt'
-            )
-            inputs.to(self.device)
-            outputs = self.model(**inputs)
-            embeddings = outputs.detach().cpu().numpy() 
-            return embeddings.flatten()
-        else:
-            return super().encode(query)        
-        
 
 class TctColBertQueryEncoder(QueryEncoder):
 
@@ -351,7 +318,7 @@ class AutoQueryEncoder(QueryEncoder):
             )
 
             inputs.to(self.device)
-            outputs = self.model(**inputs)
+            outputs = self.model.encoder(**inputs)
             if self.pooling == "mean":
                 embeddings = self._mean_pooling(outputs, inputs['attention_mask']).detach().cpu().numpy()
             else:

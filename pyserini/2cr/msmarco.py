@@ -30,7 +30,6 @@ from ._base import run_eval_and_return_metric, ok_str, okish_str, fail_str
 
 # The models: the rows of the results table will be ordered this way.
 models = {
-    # MS MARCO v1 passage
     'msmarco-v1-passage':
     ['bm25-default',
      'bm25-rm3-default',
@@ -48,40 +47,21 @@ models = {
      'bm25-rm3-d2q-t5-tuned',
      'bm25-rocchio-d2q-t5-tuned',
      '',
-     'unicoil',
-     'unicoil-pytorch',
-     'unicoil-onnx',
-     '',
      'unicoil-noexp',
-     'unicoil-noexp-pytorch',
-     'unicoil-noexp-onnx',
+     'unicoil',
      '',
-     'splade-pp-ed-onnx',
-     'splade-pp-ed-rocchio-onnx',
-     'splade-pp-sd-onnx',
-     'splade-pp-sd-rocchio-onnx',
+     'unicoil-noexp-otf',
+     'unicoil-otf',
      '',
      'ance',
-     'ance-pytorch',
-     '',
      'distilbert-kd',
-     'distilbert-kd-pytorch',
      'distilbert-kd-tasb',
-     'distilbert-kd-tasb-pytorch',
-     '',
      'tct_colbert-v2-hnp',
-     'tct_colbert-v2-hnp-pytorch',
      '',
-     'slimr',
-     'slimr-pp',
-     '',
-     'aggretriever-distilbert-pytorch',
-     'aggretriever-cocondenser-pytorch',
-     '',
-     'openai-ada2',
-     'openai-ada2-hyde'],
-
-    # MS MARCO v1 doc
+     'ance-otf',
+     'distilbert-kd-otf',
+     'distilbert-kd-tasb-otf',
+     'tct_colbert-v2-hnp-otf'],
     'msmarco-v1-doc':
     ['bm25-doc-default',
      'bm25-doc-segmented-default',
@@ -108,12 +88,10 @@ models = {
      'bm25-rm3-d2q-t5-doc-segmented-tuned',
      '',
      'unicoil-noexp',
-     'unicoil-noexp-pytorch',
-     '',
      'unicoil',
-     'unicoil-pytorch'],
-
-    # MS MARCO v2 passage
+     '',
+     'unicoil-noexp-otf',
+     'unicoil-otf'],
     'msmarco-v2-passage':
     ['bm25-default',
      'bm25-augmented-default',
@@ -130,8 +108,6 @@ models = {
      '',
      'unicoil-noexp-otf',
      'unicoil-otf'],
-
-    # MS MARCO v2 doc
     'msmarco-v2-doc':
     ['bm25-doc-default',
      'bm25-doc-segmented-default',
@@ -253,10 +229,7 @@ def format_command(raw):
     return raw.replace('--topics', '\\\n  --topics') \
         .replace('--threads', '\\\n  --threads')\
         .replace('--index', '\\\n  --index')\
-        .replace('--output ', '\\\n  --output ')\
-        .replace('--encoder', '\\\n  --encoder')\
-        .replace('--onnx-encoder', '\\\n  --onnx-encoder')\
-        .replace('--encoded-corpus', '\\\n  --encoded-corpus')\
+        .replace('--output', '\\\n  --output')\
         .replace('.txt ', '.txt \\\n  ')
 
 
@@ -487,10 +460,9 @@ def run_conditions(args):
                                     runfile))
                             if math.isclose(score, float(expected[metric])):
                                 result_str = ok_str
-                            # Flaky tests
-                            elif args.collection == 'msmarco-v1-passage' \
-                                    and topic_key == 'msmarco-passage-dev-subset' and name == 'ance-pytorch' \
-                                    and metric == 'MRR@10' and abs(score-float(expected[metric])) <= 0.0001:
+                            # Flaky test: small difference on my iMac Studio
+                            elif args.collection == 'v1-passage' and topic_key == 'msmarco-passage-dev-subset' and \
+                                    name == 'ance-otf' and math.isclose(score, float(expected[metric]), abs_tol=2e-4):
                                 result_str = okish_str
                             else:
                                 result_str = fail_str + f' expected {expected[metric]:.4f}'

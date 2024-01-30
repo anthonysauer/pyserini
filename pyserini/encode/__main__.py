@@ -18,20 +18,19 @@ import argparse
 import sys
 
 from pyserini.encode import JsonlRepresentationWriter, FaissRepresentationWriter, JsonlCollectionIterator
-from pyserini.encode import DprDocumentEncoder, TctColBertDocumentEncoder, AnceDocumentEncoder, AggretrieverDocumentEncoder, AutoDocumentEncoder
+from pyserini.encode import DprDocumentEncoder, TctColBertDocumentEncoder, AnceDocumentEncoder, AutoDocumentEncoder
 from pyserini.encode import UniCoilDocumentEncoder
+from sentence_transformers import SentenceTransformer
 
 
 encoder_class_map = {
     "dpr": DprDocumentEncoder,
     "tct_colbert": TctColBertDocumentEncoder,
-    "aggretriever": AggretrieverDocumentEncoder,
     "ance": AnceDocumentEncoder,
     "sentence-transformers": AutoDocumentEncoder,
     "unicoil": UniCoilDocumentEncoder,
     "auto": AutoDocumentEncoder,
 }
-ALLOWED_POOLING_OPTS = ["cls","mean"]
 
 def init_encoder(encoder, encoder_class, device):
     _encoder_class = encoder_class
@@ -58,6 +57,7 @@ def init_encoder(encoder, encoder_class, device):
         kwargs.update(dict(pooling='mean', l2_norm=True))
     if (_encoder_class == "contriever") or ("contriever" in encoder):
         kwargs.update(dict(pooling='mean', l2_norm=False))
+
     return encoder_class(**kwargs)
 
 
@@ -91,9 +91,6 @@ if __name__ == '__main__':
                               required=True)
     input_parser.add_argument('--fields', help='fields that contents in jsonl has (in order)',
                               nargs='+', default=['text'], required=False)
-    input_parser.add_argument('--docid-field',
-                              help='name of document id field name. If you have a custom id with a name other than "id", "_id" or "docid", then use this argument',
-                              default=None, required=False)
     input_parser.add_argument('--delimiter', help='delimiter for the fields', default='\n', required=False)
     input_parser.add_argument('--shard-id', type=int, help='shard-id 0-based', default=0, required=False)
     input_parser.add_argument('--shard-num', type=int, help='number of shards', default=1, required=False)
@@ -115,7 +112,6 @@ if __name__ == '__main__':
                                 default='cuda:0', required=False)
     encoder_parser.add_argument('--fp16', action='store_true', default=False)
     encoder_parser.add_argument('--add-sep', action='store_true', default=False)
-    encoder_parser.add_argument('--pooling', type=str, default='cls', help='for auto classes, allow the ability to dictate pooling strategy', required=False)
 
     args = parse_args(parser, commands)
     delimiter = args.input.delimiter.replace("\\n", "\n")  # argparse would add \ prior to the passed '\n\n'
